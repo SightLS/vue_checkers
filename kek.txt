@@ -1,0 +1,26 @@
+/*
+    <div class=" board__columns
+      "
+      v-for="column in columns"
+      :key="column"
+      :id="column"
+      >
+      <div class="board__columns">
+        <div
+          class="board__square"
+          v-for="row in rows" :key="row"
+          :class="[row % 2 ? 'black' : 'white']">
+        </div>
+      </div>
+      :class="[(columns.indexOf(column) % 2 && row % 2 === 0) || (columns.indexOf(column) % 2 === 0 && row % 2)  ? 'black' : 'white']"
+        .board__rows .board__square {
+    background: white;
+  }
+
+  .board__rows:nth-child(odd) .board__square:nth-child(even) {
+    background: black;
+  }
+  .board__rows:nth-child(even) .board__square:nth-child(odd) {
+    background: black;
+  }
+      */
