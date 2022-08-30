@@ -6,7 +6,7 @@
            v-for="(col, i_col) in columns"
            :key="col"
            :id="col + row"
-           :class="[i_col % 2 !== row % 2 ? 'black' : 'white']"
+           :class="getClass(col, row, i_col)"
       >
         <div class="checker-white"
              :draggable="draggeble"
@@ -32,7 +32,11 @@ export default {
     columns: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
     draggeble: true
   }),
-  methods: () => ({})
+  methods: {
+    getClass (col, row, indexCol) {
+      return (indexCol % 2 !== row % 2) ? 'black' : 'white'
+    }
+  }
 }
 </script>
 
