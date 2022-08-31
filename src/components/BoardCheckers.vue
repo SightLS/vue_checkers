@@ -1,20 +1,23 @@
 <template>
-  <div class="board">
-    <div class="board__rows"
-         v-for="row in rows" :key="row">
-      <div class="board__square"
-           v-for="(col, i_col) in columns"
-           :key="col"
-           :id="col + row"
-           :class="[getClass(col, row, i_col)]"
-           @click="drop"
-      >
-        <div class="checker-white"
-             v-if="ifWhite (col, row, i_col)"
-             @click="takeChecker ($event)"></div>
-        <div class="checker-black"
-             v-if="ifBlack (col, row, i_col)"
-             @click="takeChecker ($event)"></div>
+  <div>
+    <div class="msg">ход {{ moveMsg() }}</div>
+    <div class="board">
+      <div class="board__rows"
+           v-for="row in rows" :key="row">
+        <div class="board__square"
+             v-for="(col, i_col) in columns"
+             :key="col"
+             :id="col + row"
+             :class="[getClass(col, row, i_col)]"
+             @click="drop"
+        >
+          <div class="checker-white"
+               v-if="ifWhite (col, row, i_col)"
+               @click="!flag ? takeChecker ($event) : flag = true"></div>
+          <div class="checker-black"
+               v-if="ifBlack (col, row, i_col)"
+               @click="flag ? takeChecker ($event) : flag = false"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -26,7 +29,9 @@ export default {
   name: 'BoardCheckers',
   data: () => ({
     rows: [1, 2, 3, 4, 5, 6, 7, 8].reverse(),
-    columns: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+    columns: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+    flag: false,
+    msg: 'черных'
   }),
   methods: {
     getClass (col, row, indexCol) {
@@ -99,6 +104,14 @@ export default {
         document.querySelectorAll('.dropPos').forEach((e) => {
           e.classList.remove('dropPos')
         })
+        this.flag ? this.flag = false : this.flag = true
+      }
+    },
+    moveMsg () {
+      if (this.flag) {
+        return 'черных'
+      } else {
+        return 'белых'
       }
     }
   }
@@ -143,6 +156,7 @@ export default {
   height: 45px;
   border-radius: 30px;
   z-index: 100;
+
 }
 
 .checker-white {
