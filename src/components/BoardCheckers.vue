@@ -7,18 +7,16 @@
            :key="col"
            :id="col + row"
            :class="[getClass(col, row, i_col)]"
-           @click="drop($event)"
+           @click="drop"
       >
         <div class="checker-white"
-             :draggable="draggeble"
              v-if="ifWhite (col, row, i_col)"
-             @click="clickWhite ($event)"></div>
+             @click="takeChecker ($event)"></div>
         <div class="checker-black"
              v-if="ifBlack (col, row, i_col)"
-             @click="clickWhite ($event)"></div>
+             @click="takeChecker ($event)"></div>
       </div>
     </div>
-    <div class="checker black"></div>
   </div>
 </template>
 
@@ -28,8 +26,7 @@ export default {
   name: 'BoardCheckers',
   data: () => ({
     rows: [1, 2, 3, 4, 5, 6, 7, 8].reverse(),
-    columns: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
-    draggeble: false
+    columns: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
   }),
   methods: {
     getClass (col, row, indexCol) {
@@ -51,26 +48,58 @@ export default {
         return true
       }
     },
-    clickWhite (event) {
+    takeChecker (event) {
+      const anotherCheckers = document.querySelectorAll('.checker-white')
+      anotherCheckers.forEach((elem) => {
+        elem.classList.remove('take')
+      })
       const e = event.target
-      e.classList.toggle('hide')
-      if (this.draggeble) {
-        this.draggeble = false
+      e.classList.add('take')
+      let sum
+      if (e.classList.contains('checker-white')) {
+        sum = 1
       } else {
-        this.draggeble = true
+        sum = -1
       }
-    },
-    dropShadow () {
-      if (this.draggeble === true) {
-        return 'drop'
-      } else {
-        return 'undrop'
+      const allSq = document.querySelectorAll('.board__square')
+      allSq.forEach((elem) => {
+        elem.classList.remove('dropPos')
+      })
+      const id0 = e.parentNode.id.codePointAt(0)
+      const id1 = e.parentNode.id.codePointAt(1)
+
+      const idRight = String.fromCodePoint(id0 - sum) + String.fromCodePoint(id1 + sum)
+      const idLeft = String.fromCodePoint(id0 + sum) + String.fromCodePoint(id1 + sum)
+      const getUpRight = document.getElementById(idRight)
+      const getUpLeft = document.getElementById(idLeft)
+      if (getUpRight && getUpLeft) {
+        if (!getUpRight.children.length) {
+          getUpRight.classList.add('dropPos')
+        }
+        if (!getUpLeft.children.length) {
+          getUpLeft.classList.add('dropPos')
+        }
+      } else if (!getUpRight && getUpLeft) {
+        if (!getUpLeft.children.length) {
+          getUpLeft.classList.add('dropPos')
+        }
+      } else if (getUpRight && !getUpLeft) {
+        if (!getUpRight.children.length) {
+          getUpRight.classList.add('dropPos')
+        }
       }
     },
     drop (event) {
-      const x = document.querySelector('.hide')
-      console.log(x, '2')
-      event.target.insertAdjacentElement('beforeend', x)
+      const x = document.querySelector('.take')
+      if (event.target.classList.contains('dropPos')) {
+        event.target.insertAdjacentElement('beforeend', x)
+        document.querySelectorAll('.take').forEach((e) => {
+          e.classList.remove('take')
+        })
+        document.querySelectorAll('.dropPos').forEach((e) => {
+          e.classList.remove('dropPos')
+        })
+      }
     }
   }
 }
@@ -101,6 +130,10 @@ export default {
   .black {
     background-color: red;
   }
+
+  .dropPos {
+    background-color: purple;
+  }
 }
 
 .checker-black {
@@ -117,7 +150,7 @@ export default {
   background-color: blue;
 }
 
-.hide {
+.take {
   background-color: gray;
 }
 
