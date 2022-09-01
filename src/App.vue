@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="tst">dasdas</div>
     <BoardCheckers/>
   </div>
 </template>
