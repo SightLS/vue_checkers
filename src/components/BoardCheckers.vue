@@ -9,7 +9,7 @@
              :key="col"
              :id="col + row"
              :class="[getClass(col, row, i_col)]"
-             @click="drop"
+             @click="checkDrop ($event)"
         >
           <div class="checker-white"
                v-if="ifWhite (col, row, i_col)"
@@ -94,8 +94,23 @@ export default {
       }
     },
     attack (event) {
-      const Checkers = [...document.querySelectorAll('.checker-white'), ...document.querySelectorAll('.checker-black')]
-      Checkers.forEach((elem) => {
+      let checkers
+      let opponent
+      if (this.flag === 'удар черных') {
+        checkers = this.$el.querySelectorAll('.checker-black')
+        opponent = 'checker-white'
+      } else if (this.flag === 'удар белых') {
+        checkers = this.$el.querySelectorAll('.checker-white')
+        opponent = 'checker-black'
+      } else if (this.flag === 'черные продолжайте бить') {
+        checkers = this.$el.querySelectorAll('.last-move-black')
+        opponent = 'checker-white'
+      } else if (this.flag === 'белые продолжайте бить') {
+        checkers = this.$el.querySelectorAll('.last-move-white')
+        opponent = 'checker-black'
+      }
+
+      checkers.forEach((elem) => {
         elem.classList.remove('take')
       })
       const e = event.target
@@ -103,6 +118,7 @@ export default {
       const allSq = document.querySelectorAll('.board__square')
       allSq.forEach((elem) => {
         elem.classList.remove('dropPos')
+        elem.classList.remove('kill-target')
       })
       const id0 = e.parentNode.id.codePointAt(0)
       const id1 = e.parentNode.id.codePointAt(1)
@@ -122,118 +138,155 @@ export default {
       const getUpLeft = document.getElementById(idUpLeft)
       const getDownRight = document.getElementById(idDownRight)
       const getDownLeft = document.getElementById(idDownLeft)
-      if (getUpRightx2 && getUpRight.children.length > 0 && getUpRightx2.children.length === 0) {
+      if (getUpRight && getUpRight.children.length &&
+        getUpRight.firstChild.classList.contains(opponent) &&
+        getUpRightx2 && !getUpRightx2.children.length) {
         getUpRightx2.classList.add('dropPos')
         getUpRight.classList.add('kill-target')
       }
-      if (getUpLeftx2 && getUpLeft.children.length > 0 && getUpLeftx2.children.length === 0) {
+      if (getUpLeft && getUpLeft.children.length &&
+        getUpLeft.firstChild.classList.contains(opponent) &&
+        getUpLeftx2 && !getUpLeftx2.children.length) {
         getUpLeftx2.classList.add('dropPos')
         getUpLeft.classList.add('kill-target')
       }
-      if (getDownRightx2 && getDownRight.children.length > 0 && getDownRightx2.children.length === 0) {
+      if (getDownRight && getDownRight.children.length &&
+        getDownRight.firstChild.classList.contains(opponent) &&
+        getDownRightx2 && !getDownRightx2.children.length) {
         getDownRightx2.classList.add('dropPos')
         getDownRight.classList.add('kill-target')
       }
-      if (getDownLeftx2 && getDownLeft.children.length > 0 && getDownLeftx2.children.length === 0) {
+      if (getDownLeft && getDownLeft.children.length &&
+        getDownLeft.firstChild.classList.contains(opponent) &&
+        getDownLeftx2 && !getDownLeftx2.children.length) {
         getDownLeft.classList.add('kill-target')
         getDownLeftx2.classList.add('dropPos')
       }
     },
-    drop (event) {
-      let check = false
+    checkCkeckers (event) {
       let opponentsСheckers
       let alienChecker
+      let id0
+      let id1
+      let idUpLeft
+      let idUpRight
+      let idDownLeft
+      let idDownRight
+      let getUpRight
+      let getUpLeft
+      let getDownRight
+      let getDownLeft
+      let upLeftx2
+      let upRightx2
+      let downLeftx2
+      let downRightx2
+      let getUpRightx2
+      let getUpLeftx2
+      let getDownRightx2
+      let getDownLeftx2
 
-      if (this.flag === 'ход белых' || this.flag === 'удар белых') {
+      function checkItems (elem, idex, arr) {
+        id0 = elem.parentNode.id.codePointAt(0)
+        id1 = elem.parentNode.id.codePointAt(1)
+        idUpLeft = String.fromCodePoint(id0 - 1) + String.fromCodePoint(id1 + 1)
+        idUpRight = String.fromCodePoint(id0 + 1) + String.fromCodePoint(id1 + 1)
+        idDownLeft = String.fromCodePoint(id0 - 1) + String.fromCodePoint(id1 - 1)
+        idDownRight = String.fromCodePoint(id0 + 1) + String.fromCodePoint(id1 - 1)
+        getUpRight = document.getElementById(idUpRight)
+        getUpLeft = document.getElementById(idUpLeft)
+        getDownRight = document.getElementById(idDownRight)
+        getDownLeft = document.getElementById(idDownLeft)
+        upLeftx2 = String.fromCodePoint(id0 - 2) + String.fromCodePoint(id1 + 2)
+        upRightx2 = String.fromCodePoint(id0 + 2) + String.fromCodePoint(id1 + 2)
+        downLeftx2 = String.fromCodePoint(id0 - 2) + String.fromCodePoint(id1 - 2)
+        downRightx2 = String.fromCodePoint(id0 + 2) + String.fromCodePoint(id1 - 2)
+        getUpRightx2 = document.getElementById(upRightx2)
+        getUpLeftx2 = document.getElementById(upLeftx2)
+        getDownRightx2 = document.getElementById(downRightx2)
+        getDownLeftx2 = document.getElementById(downLeftx2)
+        if (getUpRight && getUpRight.children.length &&
+          getUpRight.firstChild.classList.contains(opponentsСheckers) &&
+          getUpRightx2 && !getUpRightx2.children.length) {
+          return true
+        }
+        if (getUpLeft && getUpLeft.children.length &&
+          getUpLeft.firstChild.classList.contains(opponentsСheckers) &&
+          getUpLeftx2 && !getUpLeftx2.children.length) {
+          return true
+        }
+        if (getDownRight && getDownRight.children.length &&
+          getDownRight.firstChild.classList.contains(opponentsСheckers) &&
+          getDownRightx2 && !getDownRightx2.children.length) {
+          return true
+        }
+        if (getDownLeft && getDownLeft.children.length &&
+          getDownLeft.firstChild.classList.contains(opponentsСheckers) &&
+          getDownLeftx2 && !getDownLeftx2.children.length) {
+          return true
+        }
+      }
+
+      let checkers
+      let check
+      if (this.flag === 'белые совершили ход') {
         opponentsСheckers = 'checker-white'
         alienChecker = '.checker-black'
-      } else if (this.flag === 'ход черных' || this.flag === 'удар черных') {
+        checkers = this.$el.querySelectorAll(alienChecker)
+        checkers = Array.from(checkers)
+        check = checkers.some(checkItems)
+        if (check === true) {
+          this.flag = 'удар черных'
+        } else {
+          this.flag = 'ход черных'
+        }
+      }
+      if (this.flag === 'черные совершили ход') {
         opponentsСheckers = 'checker-black'
         alienChecker = '.checker-white'
-      }
-      const x = document.querySelector('.take')
-      if (event.target.classList.contains('dropPos')) {
-        event.target.insertAdjacentElement('beforeend', x)
-        document.querySelectorAll('.kill-target').forEach((e) => {
-          e.classList.remove('kill-target')
-          e.innerHTML = ''
-        })
-        document.querySelectorAll('.take').forEach((e) => {
-          e.classList.remove('take')
-        })
-        document.querySelectorAll('.dropPos').forEach((e) => {
-          e.classList.remove('dropPos')
-        })
-        let checkers = this.$el.querySelectorAll(alienChecker)
+        checkers = this.$el.querySelectorAll(alienChecker)
         checkers = Array.from(checkers)
-        let id0
-        let id1
-        let idUpLeft
-        let idUpRight
-        let idDownLeft
-        let idDownRight
-        let getUpRight
-        let getUpLeft
-        let getDownRight
-        let getDownLeft
-        let upLeftx2
-        let upRightx2
-        let downLeftx2
-        let downRightx2
-        let getUpRightx2
-        let getUpLeftx2
-        let getDownRightx2
-        let getDownLeftx2
-
-        function checkItems (elem, idex, arr) {
-          id0 = elem.parentNode.id.codePointAt(0)
-          id1 = elem.parentNode.id.codePointAt(1)
-          idUpLeft = String.fromCodePoint(id0 - 1) + String.fromCodePoint(id1 + 1)
-          idUpRight = String.fromCodePoint(id0 + 1) + String.fromCodePoint(id1 + 1)
-          idDownLeft = String.fromCodePoint(id0 - 1) + String.fromCodePoint(id1 - 1)
-          idDownRight = String.fromCodePoint(id0 + 1) + String.fromCodePoint(id1 - 1)
-          getUpRight = document.getElementById(idUpRight)
-          getUpLeft = document.getElementById(idUpLeft)
-          getDownRight = document.getElementById(idDownRight)
-          getDownLeft = document.getElementById(idDownLeft)
-          upLeftx2 = String.fromCodePoint(id0 - 2) + String.fromCodePoint(id1 + 2)
-          upRightx2 = String.fromCodePoint(id0 + 2) + String.fromCodePoint(id1 + 2)
-          downLeftx2 = String.fromCodePoint(id0 - 2) + String.fromCodePoint(id1 - 2)
-          downRightx2 = String.fromCodePoint(id0 + 2) + String.fromCodePoint(id1 - 2)
-          getUpRightx2 = document.getElementById(upRightx2)
-          getUpLeftx2 = document.getElementById(upLeftx2)
-          getDownRightx2 = document.getElementById(downRightx2)
-          getDownLeftx2 = document.getElementById(downLeftx2)
-          if (getUpRight && getUpRight.children.length &&
-            getUpRight.firstChild.classList.contains(opponentsСheckers) &&
-            getUpRightx2 && !getUpRightx2.children.length) {
-            return true
-          }
-          if (getUpLeft && getUpLeft.children.length &&
-            getUpLeft.firstChild.classList.contains(opponentsСheckers) &&
-            getUpLeftx2 && !getUpLeftx2.children.length) {
-            return true
-          }
-          if (getDownRight && getDownRight.children.length &&
-            getDownRight.firstChild.classList.contains(opponentsСheckers) &&
-            getDownRightx2 && !getDownRightx2.children.length) {
-            return true
-          }
-          if (getDownLeft && getDownLeft.children.length &&
-            getDownLeft.firstChild.classList.contains(opponentsСheckers) &&
-            getDownLeftx2 && !getDownLeftx2.children.length) {
-            return true
-          }
-        }
-
         check = checkers.some(checkItems)
-        if (this.flag === 'ход черных' || this.flag === 'удар черных') {
+        if (check === true) {
+          this.flag = 'удар белых'
+        } else {
+          this.flag = 'ход белых'
+        }
+      }
+      if (this.flag === 'черные совершили удар' || this.flag === 'черные продолжайте бить') {
+        opponentsСheckers = 'checker-white'
+        alienChecker = '.last-move-black'
+        checkers = this.$el.querySelectorAll(alienChecker)
+        checkers = Array.from(checkers)
+        check = checkers.some(checkItems)
+        if (check === true) {
+          this.flag = 'черные продолжайте бить'
+        } else {
+          opponentsСheckers = 'checker-black'
+          alienChecker = '.checker-white'
+          checkers = this.$el.querySelectorAll(alienChecker)
+          checkers = Array.from(checkers)
+          check = checkers.some(checkItems)
           if (check === true) {
             this.flag = 'удар белых'
           } else {
             this.flag = 'ход белых'
           }
-        } else if (this.flag === 'ход белых' || this.flag === 'удар белых') {
+        }
+      }
+      if (this.flag === 'белые совершили удар' || this.flag === 'белые продолжайте бить') {
+        opponentsСheckers = 'checker-black'
+        alienChecker = '.last-move-white'
+        checkers = this.$el.querySelectorAll(alienChecker)
+        checkers = Array.from(checkers)
+        check = checkers.some(checkItems)
+        if (check === true) {
+          this.flag = 'белые продолжайте бить'
+        } else {
+          opponentsСheckers = 'checker-white'
+          alienChecker = '.checker-black'
+          checkers = this.$el.querySelectorAll(alienChecker)
+          checkers = Array.from(checkers)
+          check = checkers.some(checkItems)
           if (check === true) {
             this.flag = 'удар черных'
           } else {
@@ -242,11 +295,80 @@ export default {
         }
       }
     },
+    drop (event) {
+      const x = document.querySelector('.take')
+      if (event.target.classList.contains('dropPos')) {
+        event.target.insertAdjacentElement('beforeend', x)
+
+        document.querySelectorAll('.last-move-black').forEach((e) => {
+          e.classList.remove('last-move-black')
+        })
+        document.querySelectorAll('.last-move-white').forEach((e) => {
+          e.classList.remove('last-move-white')
+        })
+        if (event.target.firstChild.classList.contains('checker-white')) {
+          event.target.firstChild.classList.add('last-move-white')
+        } else {
+          event.target.firstChild.classList.add('last-move-black')
+        }
+        document.querySelectorAll('.take').forEach((e) => {
+          e.classList.remove('take')
+        })
+        document.querySelectorAll('.dropPos').forEach((e) => {
+          e.classList.remove('dropPos')
+        })
+        if (this.flag === 'ход белых') {
+          this.flag = 'белые совершили ход'
+        }
+        if (this.flag === 'ход черных') {
+          this.flag = 'черные совершили ход'
+        }
+        if (this.flag === 'удар черных') {
+          this.flag = 'черные совершили удар'
+        }
+        if (this.flag === 'удар белых') {
+          this.flag = 'белые совершили удар'
+        }
+        this.killItem(event)
+        this.checkCkeckers()
+        event.stopPropagation()
+      }
+    },
+    checkDrop (event) {
+      if (event.target.classList.contains('dropPos')) {
+        this.drop(event)
+      }
+    },
+    killItem (event) {
+      const id0 = event.target.id.codePointAt(0)
+      const id1 = event.target.id.codePointAt(1)
+      const idUpLeft = String.fromCodePoint(id0 - 1) + String.fromCodePoint(id1 + 1)
+      const idUpRight = String.fromCodePoint(id0 + 1) + String.fromCodePoint(id1 + 1)
+      const idDownLeft = String.fromCodePoint(id0 - 1) + String.fromCodePoint(id1 - 1)
+      const idDownRight = String.fromCodePoint(id0 + 1) + String.fromCodePoint(id1 - 1)
+      const getUpRight = document.getElementById(idUpRight)
+      const getUpLeft = document.getElementById(idUpLeft)
+      const getDownRight = document.getElementById(idDownRight)
+      const getDownLeft = document.getElementById(idDownLeft)
+      if (getUpRight && getUpRight.classList.contains('kill-target')) {
+        getUpRight.innerHTML = ''
+      } else if (getUpLeft && getUpLeft.classList.contains('kill-target')) {
+        getUpLeft.innerHTML = ''
+      } else if (getDownRight && getDownRight.classList.contains('kill-target')) {
+        getDownRight.innerHTML = ''
+      } else if (getDownLeft && getDownLeft.classList.contains('kill-target')) {
+        getDownLeft.innerHTML = ''
+      }
+
+      document.querySelectorAll('.kill-target').forEach((e) => {
+        e.classList.remove('kill-target')
+      })
+    },
     moveOrAttackBlack (event) {
       if (this.flag === 'ход черных') {
         return this.takeChecker(event)
       }
-      if (this.flag === 'удар черных') {
+      if (this.flag === 'удар черных' || this.flag === 'черные продолжайте бить') {
         return this.attack(event)
       }
     },
@@ -254,13 +376,12 @@ export default {
       if (this.flag === 'ход белых') {
         return this.takeChecker(event)
       }
-      if (this.flag === 'удар белых') {
+      if (this.flag === 'удар белых' || this.flag === 'белые продолжайте бить') {
         return this.attack(event)
       }
     }
   },
   mounted () {
-    // this.$el.addEventListener('DOMContentLoaded', this.delComment(), false)
     const treeWalker = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT, null, false)
     const nodeList = []
     while (treeWalker.nextNode()) nodeList.push(treeWalker.currentNode)
@@ -304,6 +425,14 @@ export default {
 
   .kill-target {
     background-color: antiquewhite;
+  }
+
+  .last-move-white {
+    background-color: aqua;
+  }
+
+  .last-move-black {
+    background-color: #2c3e50;
   }
 }
 
