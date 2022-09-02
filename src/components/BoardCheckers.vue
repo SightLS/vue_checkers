@@ -163,7 +163,7 @@ export default {
         getDownLeftx2.classList.add('dropPos')
       }
     },
-    checkCkeckers (event) {
+    checkCkeckers () {
       let opponentsСheckers
       let alienChecker
       let id0
