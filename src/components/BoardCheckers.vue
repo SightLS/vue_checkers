@@ -19,6 +19,7 @@
                @click="moveOrAttackBlack($event)"></div>
         </div>
       </div>
+      <div>checker-white damka-white</div>
     </div>
   </div>
 </template>
@@ -92,6 +93,44 @@ export default {
           getUpRight.classList.add('dropPos')
         }
       }
+      if (e.classList.contains('damka-white') || e.classList.contains('damka-black')) {
+        let id
+        let getId
+        let a = id0
+        let b = id1
+        for (let i = 0; i < 4; i++) {
+          if (i === 0) {
+            console.log(a, b)
+            damkaMove(a, b)
+          } else if (i === 1) {
+            a = -a
+            console.log(a, b)
+            damkaMove(a, b)
+          } else if (i === 2) {
+            b = -b
+            console.log(a, b)
+            damkaMove(a, b)
+          } else {
+            a = -a
+            console.log(a, b)
+            damkaMove(a, b)
+          }
+        }
+
+        function damkaMove (id0, id1) {
+          let counter = 1
+          while (counter <= 8) {
+            id = String.fromCodePoint(Math.abs(id0 + counter)) + String.fromCodePoint(Math.abs(id1 + counter))
+            getId = document.getElementById(id)
+            if (getId && !getId.children.length) {
+              getId.classList.add('dropPos')
+              counter++
+            } else {
+              break
+            }
+          }
+        }
+      }
     },
     attack (event) {
       let checkers
@@ -161,6 +200,69 @@ export default {
         getDownLeftx2 && !getDownLeftx2.children.length) {
         getDownLeft.classList.add('kill-target')
         getDownLeftx2.classList.add('dropPos')
+      }
+      if (e.classList.contains('damka-white') || e.classList.contains('damka-black')) {
+        let id
+        let idx2
+        let getId
+        let getIdx2
+        const id0 = e.parentNode.id.codePointAt(0)
+        const id1 = e.parentNode.id.codePointAt(1)
+        let a = id0
+        let b = id1
+        for (let i = 0; i < 4; i++) {
+          if (i === 0) {
+            console.log('dsada')
+            damkaAttacks(a, b)
+          } else if (i === 1) {
+            a = -a
+            console.log(a)
+            damkaAttacks(a, b)
+          } else if (i === 2) {
+            b = -b
+            damkaAttacks(a, b)
+          } else {
+            a = -a
+            console.log(a)
+            damkaAttacks(a, b)
+          }
+        }
+
+        function damkaAttacks (id0, id1) {
+          let counter = 1
+          while (counter <= 8) {
+            id = String.fromCodePoint(Math.abs(id0 + counter)) + String.fromCodePoint(Math.abs(id1 + counter))
+            idx2 = String.fromCodePoint(Math.abs(id0 + counter + 1)) + String.fromCodePoint(Math.abs(id1 + counter + 1))
+            getId = document.getElementById(id)
+            getIdx2 = document.getElementById(idx2)
+            debugger
+            if (getId && getId.children.length &&
+              getId.firstChild.classList.contains(opponent) &&
+              getIdx2 && !getIdx2.children.length) {
+              getIdx2.classList.add('dropPos')
+              getId.classList.add('kill-target')
+              counter++
+              debugger
+              while (counter <= 5) {
+                idx2 = String.fromCodePoint(Math.abs(id0 + counter + 1)) + String.fromCodePoint(Math.abs(id1 + counter + 1))
+                getIdx2 = document.getElementById(idx2)
+                debugger
+                if (getIdx2 && !getIdx2.children.length) {
+                  getIdx2.classList.add('dropPos')
+                  counter++
+                } else {
+                  break
+                }
+              }
+              break
+            } else if (getId && !getId.children.length) {
+              counter++
+            } else {
+              counter = 1
+              break
+            }
+          }
+        }
       }
     },
     checkCkeckers () {
@@ -308,8 +410,16 @@ export default {
         })
         if (event.target.firstChild.classList.contains('checker-white')) {
           event.target.firstChild.classList.add('last-move-white')
+          if (event.target.id === 'b8' || event.target.id === 'd8' ||
+            event.target.id === 'f8' || event.target.id === 'h8') {
+            event.target.firstChild.classList.add('damka-white')
+          }
         } else {
           event.target.firstChild.classList.add('last-move-black')
+          if (event.target.id === 'a1' || event.target.id === 'c1' ||
+            event.target.id === 'e1' || event.target.id === 'g1') {
+            event.target.firstChild.classList.add('damka-black')
+          }
         }
         document.querySelectorAll('.take').forEach((e) => {
           e.classList.remove('take')
@@ -433,6 +543,14 @@ export default {
 
   .last-move-black {
     background-color: #2c3e50;
+  }
+
+  .damka-white {
+    background-color: chocolate;
+  }
+
+  .damka-black {
+    background-color: chartreuse;
   }
 }
 

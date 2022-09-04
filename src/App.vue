@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <div class="tst">dasdas</div>
-    <BoardCheckers/>
+    <button @click="show = !show" v-if="!show">play checkers</button>
+    <BoardCheckers v-if="show"/>
   </div>
 </template>
 
@@ -12,7 +12,10 @@ export default {
   name: 'App',
   components: {
     BoardCheckers
-  }
+  },
+  data: () => ({
+    show: true
+  })
 }
 </script>
 
