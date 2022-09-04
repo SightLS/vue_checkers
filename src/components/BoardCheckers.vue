@@ -100,19 +100,15 @@ export default {
         let b = id1
         for (let i = 0; i < 4; i++) {
           if (i === 0) {
-            console.log(a, b)
             damkaMove(a, b)
           } else if (i === 1) {
             a = -a
-            console.log(a, b)
             damkaMove(a, b)
           } else if (i === 2) {
             b = -b
-            console.log(a, b)
             damkaMove(a, b)
           } else {
             a = -a
-            console.log(a, b)
             damkaMove(a, b)
           }
         }
@@ -161,69 +157,51 @@ export default {
       })
       const id0 = e.parentNode.id.codePointAt(0)
       const id1 = e.parentNode.id.codePointAt(1)
-      const upLeftx2 = String.fromCodePoint(id0 - 2) + String.fromCodePoint(id1 + 2)
-      const upRightx2 = String.fromCodePoint(id0 + 2) + String.fromCodePoint(id1 + 2)
-      const downLeftx2 = String.fromCodePoint(id0 - 2) + String.fromCodePoint(id1 - 2)
-      const downRightx2 = String.fromCodePoint(id0 + 2) + String.fromCodePoint(id1 - 2)
-      const getUpRightx2 = document.getElementById(upRightx2)
-      const getUpLeftx2 = document.getElementById(upLeftx2)
-      const getDownRightx2 = document.getElementById(downRightx2)
-      const getDownLeftx2 = document.getElementById(downLeftx2)
-      const idUpLeft = String.fromCodePoint(id0 - 1) + String.fromCodePoint(id1 + 1)
-      const idUpRight = String.fromCodePoint(id0 + 1) + String.fromCodePoint(id1 + 1)
-      const idDownLeft = String.fromCodePoint(id0 - 1) + String.fromCodePoint(id1 - 1)
-      const idDownRight = String.fromCodePoint(id0 + 1) + String.fromCodePoint(id1 - 1)
-      const getUpRight = document.getElementById(idUpRight)
-      const getUpLeft = document.getElementById(idUpLeft)
-      const getDownRight = document.getElementById(idDownRight)
-      const getDownLeft = document.getElementById(idDownLeft)
-      if (getUpRight && getUpRight.children.length &&
-        getUpRight.firstChild.classList.contains(opponent) &&
-        getUpRightx2 && !getUpRightx2.children.length) {
-        getUpRightx2.classList.add('dropPos')
-        getUpRight.classList.add('kill-target')
-      }
-      if (getUpLeft && getUpLeft.children.length &&
-        getUpLeft.firstChild.classList.contains(opponent) &&
-        getUpLeftx2 && !getUpLeftx2.children.length) {
-        getUpLeftx2.classList.add('dropPos')
-        getUpLeft.classList.add('kill-target')
-      }
-      if (getDownRight && getDownRight.children.length &&
-        getDownRight.firstChild.classList.contains(opponent) &&
-        getDownRightx2 && !getDownRightx2.children.length) {
-        getDownRightx2.classList.add('dropPos')
-        getDownRight.classList.add('kill-target')
-      }
-      if (getDownLeft && getDownLeft.children.length &&
-        getDownLeft.firstChild.classList.contains(opponent) &&
-        getDownLeftx2 && !getDownLeftx2.children.length) {
-        getDownLeft.classList.add('kill-target')
-        getDownLeftx2.classList.add('dropPos')
+
+      let id
+      let idx2
+      let getId
+      let getIdx2
+      let a = id0
+      let b = id1
+      for (let i = 0; i < 4; i++) {
+        if (i === 0) {
+          checkerAttacks(a, b)
+        } else if (i === 1) {
+          a = -a
+          checkerAttacks(a, b)
+        } else if (i === 2) {
+          b = -b
+          checkerAttacks(a, b)
+        } else {
+          a = -a
+          checkerAttacks(a, b)
+        }
+        function checkerAttacks (id0, id1) {
+          id = String.fromCodePoint(Math.abs(id0 + 1)) + String.fromCodePoint(Math.abs(id1 + 1))
+          idx2 = String.fromCodePoint(Math.abs(id0 + 2)) + String.fromCodePoint(Math.abs(id1 + 2))
+          getId = document.getElementById(id)
+          getIdx2 = document.getElementById(idx2)
+          if (getId && getId.children.length &&
+            getId.firstChild.classList.contains(opponent) &&
+            getIdx2 && !getIdx2.children.length) {
+            getIdx2.classList.add('dropPos')
+            getId.classList.add('kill-target')
+          }
+        }
       }
       if (e.classList.contains('damka-white') || e.classList.contains('damka-black')) {
-        let id
-        let idx2
-        let getId
-        let getIdx2
-        const id0 = e.parentNode.id.codePointAt(0)
-        const id1 = e.parentNode.id.codePointAt(1)
-        let a = id0
-        let b = id1
         for (let i = 0; i < 4; i++) {
           if (i === 0) {
-            console.log('dsada')
             damkaAttacks(a, b)
           } else if (i === 1) {
             a = -a
-            console.log(a)
             damkaAttacks(a, b)
           } else if (i === 2) {
             b = -b
             damkaAttacks(a, b)
           } else {
             a = -a
-            console.log(a)
             damkaAttacks(a, b)
           }
         }
@@ -235,18 +213,15 @@ export default {
             idx2 = String.fromCodePoint(Math.abs(id0 + counter + 1)) + String.fromCodePoint(Math.abs(id1 + counter + 1))
             getId = document.getElementById(id)
             getIdx2 = document.getElementById(idx2)
-            debugger
             if (getId && getId.children.length &&
               getId.firstChild.classList.contains(opponent) &&
               getIdx2 && !getIdx2.children.length) {
               getIdx2.classList.add('dropPos')
               getId.classList.add('kill-target')
               counter++
-              debugger
               while (counter <= 5) {
                 idx2 = String.fromCodePoint(Math.abs(id0 + counter + 1)) + String.fromCodePoint(Math.abs(id1 + counter + 1))
                 getIdx2 = document.getElementById(idx2)
-                debugger
                 if (getIdx2 && !getIdx2.children.length) {
                   getIdx2.classList.add('dropPos')
                   counter++
