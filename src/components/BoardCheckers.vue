@@ -256,25 +256,21 @@ export default {
         let b = id1
         for (let i = 0; i < 4; i++) {
           if (i === 0) {
-            checkForNextMove(a, b)
             if (checkForNextMove(a, b)) {
               return true
             }
           } else if (i === 1) {
             a = -a
-            checkForNextMove(a, b)
             if (checkForNextMove(a, b)) {
               return true
             }
           } else if (i === 2) {
             b = -b
-            checkForNextMove(a, b)
             if (checkForNextMove(a, b)) {
               return true
             }
           } else {
             a = -a
-            checkForNextMove(a, b)
             if (checkForNextMove(a, b)) {
               return true
             }
